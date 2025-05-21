@@ -1,4 +1,5 @@
 using JWTAuthDotNet8.Data;
+using JWTAuthDotNet8.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ var provider = builder.Services.BuildServiceProvider();
 var config = provider.GetRequiredService<IConfiguration>();
 builder.Services.AddDbContext<UserDBContext>(item => item.UseSqlServer(config.GetConnectionString("dbconn")));
 
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
