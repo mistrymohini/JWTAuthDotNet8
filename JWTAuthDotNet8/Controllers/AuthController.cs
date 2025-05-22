@@ -1,6 +1,7 @@
 ﻿using JWTAuthDotNet8.Entities;
 using JWTAuthDotNet8.Models;
 using JWTAuthDotNet8.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -37,5 +38,10 @@ namespace JWTAuthDotNet8.Controllers
             return Ok(token);
         }
 
+        [Authorize]
+        [HttpGet]
+        public IActionResult AuthenticatedOnlyEndPoint() {
+            return Ok("You are Authenticated!");
+        }
     }
 }
