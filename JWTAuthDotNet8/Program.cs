@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -24,13 +25,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = builder.Configuration["AppString: Issuer"],
+            ValidIssuer ="MyAwesomeApp" ,
             ValidateAudience = true,
-            ValidAudience = builder.Configuration["AppString: Audience"],
+            ValidAudience = "MyAwesomeAudience",
             ValidateLifetime = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppString: Token"]!)),
-            ValidateIssuerSigningKey=true,
-
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecureAndRandomKeyThatLooksJustAwesomeAndNeedsToBeVeryLongLongLong")),
+            ValidateIssuerSigningKey =true
         };
     });
 
