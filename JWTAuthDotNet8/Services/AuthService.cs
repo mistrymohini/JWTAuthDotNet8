@@ -47,7 +47,24 @@ namespace JWTAuthDotNet8.Services
 
             return user;
         }
-        
+
+        private string GenerateRefreshToken()
+        {
+            var randomnumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomnumber); 
+            return Convert.ToBase64String(randomnumber);
+        }
+
+        private async Task<string> GenerateAndSaveRefreshTokenAsync(User user)
+        {
+            var refreshtoken=GenerateRefreshToken();    
+            user.RefreshToken = refreshtoken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await context.SaveChangesAsync();
+            return refreshtoken;
+        }
+
         private string CreateToken(User user)
         {
             var claims = new List<Claim>()
