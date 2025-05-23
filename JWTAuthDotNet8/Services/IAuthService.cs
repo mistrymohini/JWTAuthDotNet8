@@ -7,6 +7,6 @@ namespace JWTAuthDotNet8.Services
     {
         Task<User?> RegisterAsync(UserModel request);
 
-        Task<string?> LoginAsync(UserModel request);
+        Task<TokenResponseModel?> LoginAsync(UserModel request);
     }
 }

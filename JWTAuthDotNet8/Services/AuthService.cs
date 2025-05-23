@@ -14,7 +14,7 @@ namespace JWTAuthDotNet8.Services
 {
     public class AuthService(UserDBContext context, IConfiguration configuration) : IAuthService
     {
-        public async Task<string?> LoginAsync(UserModel request)
+        public async Task<TokenResponseModel?> LoginAsync(UserModel request)
         {
             var user = await context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user is null)
@@ -25,7 +25,14 @@ namespace JWTAuthDotNet8.Services
             {
                 return null;
             }
-            return CreateToken(user);
+
+            var response = new TokenResponseModel
+            {
+                AccessToken = CreateToken(user),
+                RefreshToken = await GenerateAndSaveRefreshTokenAsync(user)
+            };
+
+            return response;
         }
 
         public async Task<User?> RegisterAsync(UserModel request)

@@ -29,13 +29,13 @@ namespace JWTAuthDotNet8.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserModel userModel)
+        public async Task<ActionResult<TokenResponseModel>> Login(UserModel userModel)
         {
-            var token = await authService.LoginAsync(userModel);
-            if (token is null)
+            var result = await authService.LoginAsync(userModel);
+            if (result is null)
                 return BadRequest("Invalid Username or Password!");
 
-            return Ok(token);
+            return Ok(result);
         }
 
         [Authorize]
