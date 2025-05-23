@@ -43,5 +43,12 @@ namespace JWTAuthDotNet8.Controllers
         public IActionResult AuthenticatedOnlyEndPoint() {
             return Ok("You are Authenticated!");
         }
+
+        [Authorize(Roles ="Admin")]
+        [HttpGet("admin-only")]
+        public IActionResult AdminOnlyEndPoint()
+        {
+            return Ok("You are an Admin!");
+        }
     }
 }

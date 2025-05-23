@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace JWTAuthDotNet8.Services
@@ -46,12 +47,14 @@ namespace JWTAuthDotNet8.Services
 
             return user;
         }
-
+        
         private string CreateToken(User user)
         {
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name,user.Username)
+                new Claim(ClaimTypes.Name,user.Username),
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
+                new Claim(ClaimTypes.Role,user.Role)
             };
             //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("AppSettings:Token")!));
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecureAndRandomKeyThatLooksJustAwesomeAndNeedsToBeVeryLongLongLong"));
