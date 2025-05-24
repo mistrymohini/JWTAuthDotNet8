@@ -26,13 +26,18 @@ namespace JWTAuthDotNet8.Services
                 return null;
             }
 
-            var response = new TokenResponseModel
+            TokenResponseModel response = await CreateTokenResponse(user);
+
+            return response;
+        }
+
+        private async Task<TokenResponseModel> CreateTokenResponse(User? user)
+        {
+            return new TokenResponseModel
             {
                 AccessToken = CreateToken(user),
                 RefreshToken = await GenerateAndSaveRefreshTokenAsync(user)
             };
-
-            return response;
         }
 
         public async Task<User?> RegisterAsync(UserModel request)
@@ -52,6 +57,23 @@ namespace JWTAuthDotNet8.Services
             context.Users.Add(user);
             await context.SaveChangesAsync();
 
+            return user;
+        }
+
+        async Task<TokenResponseModel?> IAuthService.RefreshTokenAsync(RefreshTokenRequestModel request)
+        {
+            var user = await ValidateRefreshTokenAsync(request.UserId, request.RefreshToken);
+            if (user == null)  
+                return null; 
+            return await CreateTokenResponse(user);
+        }
+        private async Task<User?> ValidateRefreshTokenAsync(Guid userId,string refreshToken)
+        {
+            var user = await context.Users.FindAsync(userId);
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                return null;
+            }
             return user;
         }
 
@@ -95,5 +117,7 @@ namespace JWTAuthDotNet8.Services
 
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
+
+        
     }
 }

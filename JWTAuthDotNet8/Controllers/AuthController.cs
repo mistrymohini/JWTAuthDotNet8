@@ -38,6 +38,17 @@ namespace JWTAuthDotNet8.Controllers
             return Ok(result);
         }
 
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<TokenResponseModel>> RefreshToken(RefreshTokenRequestModel requestModel)
+        {
+            var result = await authService.RefreshTokenAsync(requestModel);
+            if (result is null || result.AccessToken is null || result.RefreshToken is null)
+                return Unauthorized("Invalid refresh token");
+
+            return Ok(result);
+        }
+
+
         [Authorize]
         [HttpGet]
         public IActionResult AuthenticatedOnlyEndPoint() {
